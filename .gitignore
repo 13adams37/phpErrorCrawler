@@ -1,0 +1,6 @@
+.vscode
+token.txt
+bitrix.json
+bitrix.log
+projects/
+__pycache__
