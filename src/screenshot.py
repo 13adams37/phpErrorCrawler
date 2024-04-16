@@ -3,18 +3,24 @@ import os
 import traceback
 import logging
 from pyppeteer import launch
+from pyppeteer.errors import TimeoutError
 
 
 async def fetch(browser, url, path, issue_number) -> tuple[str, bytes]:
+    async def return_screenshot(page, path, issue_number):
+        screen = await page.screenshot({"path": path, "fullPage": True, "type": "png"})
+        return (issue_number, screen)
+
     page = await browser.newPage()
 
     try:
         await page.goto(f"{url}", {"waitUntil": "load"})
+    except TimeoutError:
+        return await return_screenshot(page, path, issue_number)
     except Exception:
         traceback.print_exc()
     else:
-        screen = await page.screenshot({"path": path, "fullPage": True, "type": "png"})
-        return (issue_number, screen)
+        return await return_screenshot(page, path, issue_number)
     finally:
         await page.close()
 
@@ -52,9 +58,9 @@ def make_screenshots(data, save_path) -> list[dict]:
     )  # yadisk logging to pyppeteer
 
     current_directory = os.getcwd()
-    final_directory = os.path.join(current_directory, f'projects/{save_path}')
+    final_directory = os.path.join(current_directory, f"projects/{save_path}")
 
     if not os.path.exists(final_directory):
         os.makedirs(final_directory)
 
-    return asyncio.run(main(data, f'projects/{save_path}'))
+    return asyncio.run(main(data, f"projects/{save_path}"))
