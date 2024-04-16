@@ -23,7 +23,11 @@ def trim_php_error(php_error):
 
 def fetch_php_error(html_body):
     soup = BeautifulSoup(html_body, "html.parser")
-    return soup.find("pre").contents[0]
+    
+    try:
+        return soup.find("pre").contents[0]
+    except AttributeError:
+        return 'HTTP ERROR 500'
 
 
 def get_referer(response):
