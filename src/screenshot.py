@@ -3,7 +3,7 @@ import os
 import traceback
 import logging
 from pyppeteer import launch
-from pyppeteer.errors import TimeoutError
+from pyppeteer.errors import TimeoutError, NetworkError, PageError
 
 
 async def fetch(browser, url, path, issue_number) -> tuple[str, bytes]:
@@ -15,8 +15,8 @@ async def fetch(browser, url, path, issue_number) -> tuple[str, bytes]:
 
     try:
         await page.goto(f"{url}", {"waitUntil": "load"})
-    except TimeoutError:
-        return await return_screenshot(page, path, issue_number)
+    except (TimeoutError, NetworkError, PageError):
+        return (issue_number, "Без скриншота")
     except Exception:
         traceback.print_exc()
     else:
