@@ -12,9 +12,9 @@ BOT_NAME = "bitrixCrawler"
 SPIDER_MODULES = ["bitrixCrawler.spiders"]
 NEWSPIDER_MODULE = "bitrixCrawler.spiders"
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = "bitrixCrawler (+https://www.citrus-soft.com)"
+# USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.90 Safari/537.36"
 
 # DUPEFILTER_DEBUG = True # show all 'Filtered duplicate request'
 
@@ -22,16 +22,21 @@ USER_AGENT = "bitrixCrawler (+https://www.citrus-soft.com)"
 # ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 2
+CONCURRENT_REQUESTS = 4
+
 RETRY_ENABLED = False
 HTTPERROR_ALLOW_ALL = True # pass all responses
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+
+# DOWNLOAD_DELAY = 0.3 # 300ms
+# DEPTH_LIMIT = 3
+DEPTH_PRIORITY = 1
+
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 2
+CONCURRENT_REQUESTS_PER_DOMAIN = 4
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
@@ -39,6 +44,11 @@ COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 TELNETCONSOLE_ENABLED = False
+
+#log settings
+LOG_FILE = "crawler.log"
+LOG_STDOUT = True
+LOG_FILE_APPEND = False
 
 # Override the default request headers:
 #DEFAULT_REQUEST_HEADERS = {
