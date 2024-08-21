@@ -12,11 +12,12 @@ async def fetch(browser, url, path, issue_number) -> tuple[str, bytes]:
         return (issue_number, screen)
 
     page = await browser.newPage()
+    page.setDefaultNavigationTimeout(60000)
 
     try:
         await page.goto(f"{url}", {"waitUntil": "load"})
     except (TimeoutError, NetworkError, PageError):
-        return (issue_number, "Без скриншота")
+        return (issue_number, "Ошибка. Без скриншота")
     except Exception:
         traceback.print_exc()
     else:
@@ -39,10 +40,10 @@ async def main(datas, path) -> list[dict]:
                 fetch(browser, data["url"], screenshot_path, data["id"])
             )
         )
-        data["screenshot"] = screenshot_path
 
     for coro in asyncio.as_completed(tasks):
-        await coro  # issue_number, screen
+        screen_data = await coro  # issue_number, screen
+        datas[screen_data[0] - 1]["screenshot"] = screen_data[1]
 
     await browser.close()
     return datas
