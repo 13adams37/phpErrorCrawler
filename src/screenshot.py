@@ -43,7 +43,7 @@ async def main(datas, path) -> list[dict]:
 
     for coro in asyncio.as_completed(tasks):
         screen_data = await coro  # issue_number, screen
-        datas[screen_data[0] - 1]["screenshot"] = screen_data[1]
+        datas[screen_data[0] - 1]["screenshot"] = f"{path}{screen_data[0]}.png" if type(screen_data[1]) is bytes else screen_data[1]
 
     await browser.close()
     return datas
