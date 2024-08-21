@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 
 def process_links(links):
+    # print('crawler links = ', links)
     for link in links:
         link.url = url_query_cleaner(link.url)  # remove  queries
         yield link
@@ -17,7 +18,6 @@ def has_php_error(php_error, error_list) -> bool:
     
 
 def trim_php_error(php_error):
-    # if php_error.split("#0: ")[0] not in error_list:
     return php_error.split("#0: ")[0]
 
 
@@ -34,7 +34,7 @@ def get_referer(response):
     try:
         return response.request.headers.get("Referer", None).decode("utf-8")
     except AttributeError:  # if no referer
-        return ""
+        return "None"
 
 
 class BitrixCrawler(CrawlSpider):
@@ -61,6 +61,20 @@ class BitrixCrawler(CrawlSpider):
 
     def parse_item(self, response):
         text_error = ""
+        
+        if(len(response.body) <= 1000 and (response.status >=200 and response.status <= 299)):     
+            print('LOW RESPONSE SIZE')
+            self.error_count = self.error_count + 1
+
+            self.urls_with_errors.append(
+                {
+                    "id": self.error_count,
+                    "url": response.url,
+                    "status_code": response.status,
+                    "text_error": f"LOW RESPONSE SIZE = {len(response.body)}",
+                    "referer": get_referer(response),
+                },
+            )
 
         if response.status >= 500:
             text_error = trim_php_error(fetch_php_error(response.text))
@@ -96,3 +110,11 @@ class BitrixCrawler(CrawlSpider):
     def closed(self, reason):
         print("bitrixCrawler was closed by -", reason)
         print("urls with err", self.urls_with_errors)
+
+
+if __name__ == "__main__":
+    test_data = []
+    output = []
+    for data in test_data:
+        if(data):
+            output.append(data)
