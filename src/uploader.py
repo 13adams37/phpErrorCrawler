@@ -28,10 +28,11 @@ class Uploader:
 
     def make_dir(self, dir_name) -> bool:
         try:
-            self.__client.mkdir(dir_name)  # create dir
+            self.__client.mkdir(dir_name)
             return True
         except yadisk.exceptions.DirectoryExistsError:
-            # self.__client.remove(dirName)  # permanently = True # directory exists
+            self.__client.remove(dir_name)
+            self.__client.mkdir(dir_name, n_retries = 3, retry_interval = 10)
             return False
 
     def upload_photos_sync(self, photo_path) -> None:
