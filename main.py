@@ -32,7 +32,7 @@ def main(
 
     if len(BitrixCrawler.urls_with_errors) > 0:
         after_crawler = AfterCrawlerMethods()
-        after_crawler.run(BitrixCrawler.urls_with_errors)
+        after_crawler.run(BitrixCrawler.urls_with_errors, allowed_domains[0])
     else:
         print("Ошибок не обнаружено (но это не точно)")
 

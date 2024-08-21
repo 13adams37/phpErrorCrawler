@@ -8,9 +8,8 @@ class AfterCrawlerMethods:
     def __init__(self):
         self.data = {}
 
-    def run(self, income_data):
+    def run(self, income_data, project_name):
         self.data = income_data
-        project_name = urlparse(self.data[0]["url"]).netloc
         working_dir = f"{project_name}/"
 
         errors_with_screenshots = self.get_errors_with_screenshots(
@@ -30,8 +29,9 @@ class AfterCrawlerMethods:
 
         if disk.api_valid is not False:
             for screenshot in data_with_screenshots:
-                disk.upload_photos_sync(screenshot["screenshot"])
-                disk.publish_file(screenshot["screenshot"])
+                if screenshot["screenshot"] != "Ошибка. Без скриншота":
+                    disk.upload_photos_sync(screenshot["screenshot"])
+                    disk.publish_file(screenshot["screenshot"])
 
             errors_screenshots = disk.get_screenshots_public_path()
 
