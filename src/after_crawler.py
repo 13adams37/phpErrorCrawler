@@ -8,12 +8,12 @@ class AfterCrawlerMethods:
     def __init__(self):
         self.data = {}
 
-    def run(self, income_data, project_name):
+    def run(self, income_data, project_name, is_local):
         self.data = income_data
         working_dir = f"{project_name}/"
 
         errors_with_screenshots = self.get_errors_with_screenshots(
-            self.data, working_dir
+            self.data, working_dir, is_local
         )
         
         print('erros with screenshots', errors_with_screenshots)
@@ -22,12 +22,15 @@ class AfterCrawlerMethods:
             errors_with_screenshots, f"{working_dir}{project_name}"
         )
 
-    def get_errors_with_screenshots(self, data, working_dir):
+    def get_errors_with_screenshots(self, data, working_dir, is_local):
+        data_with_screenshots = make_screenshots(data, working_dir)
+        
+        if is_local:
+            return data_with_screenshots
+        
         disk = Uploader(working_dir=working_dir)
 
-        data_with_screenshots = make_screenshots(data, working_dir)
-
-        if disk.api_valid is not False:
+        if disk.api_valid:
             for screenshot in data_with_screenshots:
                 if screenshot["screenshot"] != "Ошибка. Без скриншота":
                     disk.upload_photos_sync(screenshot["screenshot"])
