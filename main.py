@@ -15,7 +15,7 @@ def main(
     allowed_domains=["citrus-test.ru", "citrus-web.ru"],
     start_urls=["https://citrus-soft.ru/"],
 ):
-    print(allowed_domains, start_urls)
+    print(allowed_domains, start_urls, is_local)
     settings = Settings()
     settings.setmodule(CrawlerSettings, priority="default")
 
@@ -32,7 +32,7 @@ def main(
 
     if len(BitrixCrawler.urls_with_errors) > 0:
         after_crawler = AfterCrawlerMethods()
-        after_crawler.run(BitrixCrawler.urls_with_errors, allowed_domains[0])
+        after_crawler.run(BitrixCrawler.urls_with_errors, allowed_domains[0], is_local)
     else:
         print("Ошибок не обнаружено (но это не точно)")
 
@@ -40,9 +40,11 @@ def main(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Автотест ошибок PHP")
     parser.add_argument("url", help="Адрес ресурса формата https://citrus-soft.ru/")
+    parser.add_argument('-l', '--local', action='store_true', help="Если агрумент присутсвует, то скриншоты будут соханяться только локально")
     args = parser.parse_args()
     url_scheme = urlparse(args.url).scheme
     if url_scheme == "http" or url_scheme == "https":
+        is_local = args.local
         main(get_allowed_domain(args.url), [args.url])
     else:
         print("Введите правильный URL")

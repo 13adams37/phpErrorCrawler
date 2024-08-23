@@ -111,10 +111,3 @@ class BitrixCrawler(CrawlSpider):
         print("bitrixCrawler was closed by -", reason)
         print("urls with err", self.urls_with_errors)
 
-
-if __name__ == "__main__":
-    test_data = []
-    output = []
-    for data in test_data:
-        if(data):
-            output.append(data)
